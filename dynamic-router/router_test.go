@@ -22,13 +22,14 @@ func TestHandleMessageWithRoute(t *testing.T) {
 
 	queueName := "/queue1"
 	ctrlMsg := &ControlMessage{Action: AddRoute, Route: "route1", QueueName: queueName}
-	msg := &Message{Route: "route1", Content: "test message"}
+	content := "test message"
+	msg := &Message{Route: "route1", Content: content}
 
 	router.HandleControlMessage(ctrlMsg)
 	router.HandleMessage(msg)
 
-	if got := router.findQueue(queueName).Dequeue(); got != "test message" {
-		t.Fatalf("got %v, want %v", got, "test message")
+	if got := router.findQueue(queueName).Dequeue(); got != content {
+		t.Fatalf("got %v, want %v", got, content)
 	}
 }
 
@@ -43,6 +44,6 @@ func TestControlMessageRemoveRoute(t *testing.T) {
 	router.HandleControlMessage(removeCtrlMsg)
 
 	if got := router.findQueue(queueName); got != nil {
-		t.Fatalf("got %v, want %v", got, "test message")
+		t.Fatalf("got %v, want %v", got, nil)
 	}
 }
